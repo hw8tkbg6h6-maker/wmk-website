@@ -1,0 +1,3089 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雷石硬件信息管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --gray-color: #95a5a6;
+            --border-color: #bdc3c7;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --lei-shi: #3498db;
+            --lei-ke: #9b59b6;
+            --wa-wu: #e74c3c;
+            --he-yin: #2ecc71;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .system-info {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .info-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-title i {
+            color: var(--secondary-color);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        label i {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+        
+        .required::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+        
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #d68910;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e8f4fc;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .edit-btn {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .edit-btn:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+        
+        .delete-btn {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        .approve-btn {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .approve-btn:hover {
+            background-color: rgba(46, 204, 113, 0.2);
+        }
+        
+        .reject-btn {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .reject-btn:hover {
+            background-color: rgba(243, 156, 18, 0.2);
+        }
+        
+        .mac-address {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .serial-number {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .stat-1 {
+            background-color: var(--secondary-color);
+        }
+        
+        .stat-2 {
+            background-color: var(--accent-color);
+        }
+        
+        .stat-3 {
+            background-color: var(--warning-color);
+        }
+        
+        .stat-4 {
+            background-color: var(--danger-color);
+        }
+        
+        .stat-content h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-content p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .close {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--gray-color);
+            transition: var(--transition);
+        }
+        
+        .close:hover {
+            color: var(--danger-color);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-left: 4px solid var(--warning-color);
+            color: #8a6d3b;
+        }
+        
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--accent-color);
+            color: #27ae60;
+        }
+        
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--danger-color);
+            color: #c0392b;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .mac-format, .serial-format {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 5px;
+        }
+        
+        .serial-preview {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid var(--secondary-color);
+            margin-top: 10px;
+        }
+        
+        .serial-preview-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .serial-preview-content {
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .business-line-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .lei-shi-badge {
+            background-color: var(--lei-shi);
+        }
+        
+        .lei-ke-badge {
+            background-color: var(--lei-ke);
+        }
+        
+        .wa-wu-badge {
+            background-color: var(--wa-wu);
+        }
+        
+        .he-yin-badge {
+            background-color: var(--he-yin);
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-color);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            color: var(--secondary-color);
+        }
+        
+        .tab.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .status-approved {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .status-rejected {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .role-super-admin {
+            background-color: var(--danger-color);
+        }
+        
+        .role-admin {
+            background-color: var(--warning-color);
+        }
+        
+        .role-user {
+            background-color: var(--secondary-color);
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .permission-note {
+            font-size: 0.9rem;
+            color: var(--warning-color);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .approval-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .config-table th, .config-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .config-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .system-info {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-menu {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="login-page" class="container">
+        <div class="login-container">
+            <h1 class="login-title">雷石硬件信息管理系统</h1>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>系统登录</strong>：请使用您的账号登录系统。初始账号：超级管理员(admin/123456)
+                </div>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username"><i class="fas fa-user"></i> 用户名</label>
+                    <input type="text" id="login-username" required placeholder="请输入用户名">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password"><i class="fas fa-lock"></i> 密码</label>
+                    <input type="password" id="login-password" required placeholder="请输入密码">
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> 登录
+                    </button>
+                    <button type="button" class="btn btn-outline" id="register-btn">
+                        <i class="fas fa-user-plus"></i> 注册新用户
+                    </button>
+                </div>
+            </form>
+            
+            <div class="alert alert-warning" style="margin-top: 20px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <strong>角色说明：</strong>
+                    <ul style="margin-top: 5px; padding-left: 20px;">
+                        <li>超级管理员：全功能访问，包括用户管理和审批</li>
+                        <li>普通管理员：新增记录需审批，可查看数据</li>
+                        <li>普通用户：仅查看数据，无新增权限</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主系统页面（登录后显示） -->
+    <div id="main-system" class="container" style="display: none;">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>雷石硬件信息管理系统</h1>
+                    <p class="subtitle">版本 3.0 · 支持权限管理与审批流程</p>
+                </div>
+                <div class="system-info">
+                    <div class="info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="current-date">2025-12-25</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-database"></i>
+                        <span id="total-records">0 条记录</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-user-shield"></i>
+                        <span id="user-role-display">角色</span>
+                    </div>
+                </div>
+                
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <div>
+                            <span id="username-display">用户名</span>
+                            <span id="user-role-badge" class="role-badge role-user">用户</span>
+                        </div>
+                    </div>
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> 退出登录
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon stat-1">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-boards">0</h3>
+                    <p>主板型号总数</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-2">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-mac">0</h3>
+                    <p>MAC地址总数</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-3">
+                    <i class="fas fa-list-ol"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-serial">0</h3>
+                    <p>序列号总数</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-4">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-production">0</h3>
+                    <p>生产总数</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="tab-container" id="main-tabs">
+                <!-- 动态生成标签页，根据用户权限显示 -->
+            </div>
+            
+            <!-- 新增记录标签页 -->
+            <div class="tab-content active" id="add-record">
+                <h2 class="card-title"><i class="fas fa-plus-circle"></i> 新增记录</h2>
+                
+                <div class="alert alert-info" id="approval-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>审批流程：</strong> 您提交的记录需要超级管理员审批通过后才会生效。
+                    </div>
+                </div>
+                
+                <form id="data-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="business-line" class="required"><i class="fas fa-sitemap"></i> 业务线</label>
+                            <select id="business-line" required>
+                                <option value="">请选择业务线</option>
+                                <option value="雷石">雷石</option>
+                                <option value="雷客">雷客</option>
+                                <option value="哇屋">哇屋</option>
+                                <option value="和音">和音</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="board-name" class="required"><i class="fas fa-microchip"></i> 主板名称</label>
+                            <input type="text" id="board-name" required placeholder="例如：X570, B550, Z690">
+                            <div class="serial-format">将作为序列号前缀，请使用简洁的型号名称</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="production-date"><i class="fas fa-calendar-alt"></i> 生产日期</label>
+                            <input type="date" id="production-date" required>
+                            <div class="serial-format">将转换为YYYYMMDD格式作为序列号中间部分</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="mac-count" class="required"><i class="fas fa-hashtag"></i> MAC数量</label>
+                            <input type="number" id="mac-count" min="1" value="10" required>
+                            <div class="mac-format">此数量将用于计算MAC地址范围</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="production-count" class="required"><i class="fas fa-industry"></i> 生产数量</label>
+                            <input type="number" id="production-count" min="1" value="10" required>
+                            <div class="mac-format">此数量将用于生成序列号，默认与MAC数量相同</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start-number"><i class="fas fa-list-ol"></i> 起始序号</label>
+                            <input type="number" id="start-number" min="1" value="1" required>
+                            <div class="serial-format">序列号的起始编号（3位数字，如001）</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="mac-start"><i class="fas fa-wifi"></i> MAC地址起始</label>
+                            <input type="text" id="mac-start" placeholder="根据业务线自动生成" readonly class="mac-address">
+                            <div class="mac-format" id="business-line-info">请先选择业务线</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mac-end"><i class="fas fa-wifi"></i> MAC地址结束</label>
+                            <input type="text" id="mac-end" placeholder="自动生成" readonly class="mac-address">
+                        </div>
+                        <div class="form-group">
+                            <label for="board-number"><i class="fas fa-barcode"></i> 板号</label>
+                            <input type="text" id="board-number" placeholder="可留空或根据规则生成">
+                        </div>
+                    </div>
+                    
+                    <div class="serial-preview" id="serial-preview" style="display:none;">
+                        <div class="serial-preview-title">序列号预览：</div>
+                        <div class="serial-preview-content" id="serial-preview-content"></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="serial-start"><i class="fas fa-list-ol"></i> 序列号起始地址</label>
+                            <input type="text" id="serial-start" placeholder="自动生成" readonly class="serial-number">
+                            <div class="serial-format" id="serial-format-hint">根据主板名称、生产日期和起始序号生成</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="serial-end"><i class="fas fa-list-ol"></i> 序列号结束地址</label>
+                            <input type="text" id="serial-end" placeholder="自动生成" readonly class="serial-number">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="notes"><i class="fas fa-sticky-note"></i> 备注</label>
+                            <input type="text" id="notes" placeholder="可选填说明信息">
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> 提交审批
+                        </button>
+                        <button type="button" class="btn btn-success" id="calculate-btn">
+                            <i class="fas fa-calculator"></i> 计算地址范围
+                        </button>
+                        <button type="button" class="btn btn-outline" id="reset-form">
+                            <i class="fas fa-redo"></i> 重置表单
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- 数据列表标签页 -->
+            <div class="tab-content" id="view-records">
+                <h2 class="card-title"><i class="fas fa-table"></i> 数据列表</h2>
+                
+                <div class="button-group">
+                    <button class="btn btn-success" id="export-btn">
+                        <i class="fas fa-file-export"></i> 导出数据 (Excel)
+                    </button>
+                    <button class="btn btn-warning" id="import-btn">
+                        <i class="fas fa-file-import"></i> 导入数据
+                    </button>
+                    <button class="btn btn-outline" id="show-pending-btn">
+                        <i class="fas fa-clock"></i> 查看待审批记录
+                    </button>
+                </div>
+                
+                <div class="alert alert-success">
+                    <i class="fas fa-filter"></i>
+                    <div>
+                        <strong>数据筛选：</strong> 
+                        <select id="filter-business-line" style="margin-left: 10px; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border-color);">
+                            <option value="">全部业务线</option>
+                            <option value="雷石">雷石</option>
+                            <option value="雷客">雷客</option>
+                            <option value="哇屋">哇屋</option>
+                            <option value="和音">和音</option>
+                        </select>
+                        <button id="apply-filter" class="btn btn-outline" style="padding: 5px 10px; margin-left: 10px;">
+                            <i class="fas fa-filter"></i> 筛选
+                        </button>
+                        <button id="clear-filter" class="btn btn-outline" style="padding: 5px 10px; margin-left: 5px;">
+                            <i class="fas fa-times"></i> 清除筛选
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>业务线</th>
+                                <th>主板名称</th>
+                                <th>MAC地址起始</th>
+                                <th>MAC地址结束</th>
+                                <th>序列号起始地址</th>
+                                <th>序列号结束地址</th>
+                                <th>MAC数量</th>
+                                <th>生产数量</th>
+                                <th>生产日期</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- 数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-warning" id="empty-table-message" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>暂无数据：</strong> 请使用"新增记录"标签页添加新的记录。
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 审批管理标签页（仅超级管理员可见） -->
+            <div class="tab-content" id="approval-management">
+                <h2 class="card-title"><i class="fas fa-check-circle"></i> 审批管理</h2>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>审批说明：</strong> 此页面仅超级管理员可见，用于审批普通管理员提交的记录。审批通过后记录将正式生效。
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="approval-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>提交人</th>
+                                <th>业务线</th>
+                                <th>主板名称</th>
+                                <th>MAC地址范围</th>
+                                <th>序列号范围</th>
+                                <th>MAC数量</th>
+                                <th>提交时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approval-table-body">
+                            <!-- 待审批记录将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-info" id="empty-approval-message" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>暂无待审批记录：</strong> 当前没有需要审批的记录。
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 业务线配置标签页（仅超级管理员可见） -->
+            <div class="tab-content" id="config">
+                <h2 class="card-title"><i class="fas fa-cog"></i> 业务线配置</h2>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>管理员功能：</strong> 此页面仅超级管理员可见，用于配置各业务线的MAC地址段。修改配置将影响后续MAC地址分配。
+                    </div>
+                </div>
+                
+                <table class="config-table">
+                    <thead>
+                        <tr>
+                            <th>业务线</th>
+                            <th>起始MAC地址</th>
+                            <th>结束MAC地址</th>
+                            <th>已使用地址数</th>
+                            <th>可用地址数</th>
+                            <th>最后使用地址</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="config-table-body">
+                        <!-- 配置信息将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+                
+                <div class="button-group">
+                    <button class="btn btn-success" id="save-config">
+                        <i class="fas fa-save"></i> 保存配置
+                    </button>
+                    <button class="btn btn-outline" id="reset-config">
+                        <i class="fas fa-undo"></i> 恢复默认
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 用户管理标签页（仅超级管理员可见） -->
+            <div class="tab-content" id="user-management">
+                <h2 class="card-title"><i class="fas fa-users"></i> 用户管理</h2>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>管理员功能：</strong> 此页面仅超级管理员可见，用于管理系统用户。
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="add-user-btn">
+                        <i class="fas fa-user-plus"></i> 添加用户
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table id="user-table">
+                        <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>姓名</th>
+                                <th>角色</th>
+                                <th>邮箱</th>
+                                <th>创建时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            <!-- 用户列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-info" id="empty-user-message" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>暂无用户：</strong> 当前系统没有其他用户。
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 批量序列号生成标签页 -->
+            <div class="tab-content" id="batch-serial">
+                <h2 class="card-title"><i class="fas fa-barcode"></i> 批量序列号生成</h2>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>批量生成说明：</strong> 此功能用于快速生成大量序列号。输入主板名称、生产日期和数量，系统将自动生成连续序列号。
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="batch-board-name" class="required"><i class="fas fa-microchip"></i> 主板名称</label>
+                        <input type="text" id="batch-board-name" required placeholder="例如：X570">
+                    </div>
+                    <div class="form-group">
+                        <label for="batch-production-date" class="required"><i class="fas fa-calendar-alt"></i> 生产日期</label>
+                        <input type="date" id="batch-production-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="batch-start-number" class="required"><i class="fas fa-list-ol"></i> 起始序号</label>
+                        <input type="number" id="batch-start-number" min="1" value="1" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="batch-count" class="required"><i class="fas fa-hashtag"></i> 生成数量</label>
+                        <input type="number" id="batch-count" min="1" max="1000" value="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="batch-prefix"><i class="fas fa-tag"></i> 前缀（可选）</label>
+                        <input type="text" id="batch-prefix" placeholder="例如：SN-">
+                    </div>
+                    <div class="form-group">
+                        <label for="batch-suffix"><i class="fas fa-tag"></i> 后缀（可选）</label>
+                        <input type="text" id="batch-suffix" placeholder="例如：-A">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-success" id="generate-batch-serial">
+                        <i class="fas fa-cogs"></i> 生成序列号
+                    </button>
+                    <button class="btn btn-primary" id="copy-batch-serial">
+                        <i class="fas fa-copy"></i> 复制序列号
+                    </button>
+                    <button class="btn btn-outline" id="clear-batch-serial">
+                        <i class="fas fa-redo"></i> 清空结果
+                    </button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-file-alt"></i> 生成结果</label>
+                        <textarea id="batch-serial-result" rows="10" readonly placeholder="生成的序列号将显示在这里"></textarea>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>注意：</strong> 批量生成的序列号不会自动保存到数据库中，请手动复制并保存。
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 我的记录标签页 -->
+            <div class="tab-content" id="my-records">
+                <h2 class="card-title"><i class="fas fa-history"></i> 我的记录</h2>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>记录查看：</strong> 这里显示您提交的所有记录，包括待审批、已通过和已拒绝的记录。
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="my-records-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>业务线</th>
+                                <th>主板名称</th>
+                                <th>MAC地址范围</th>
+                                <th>序列号范围</th>
+                                <th>MAC数量</th>
+                                <th>提交时间</th>
+                                <th>状态</th>
+                                <th>审批时间</th>
+                                <th>审批人</th>
+                            </tr>
+                        </thead>
+                        <tbody id="my-records-table-body">
+                            <!-- 用户个人记录将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-warning" id="empty-my-records-message" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>暂无记录：</strong> 您还没有提交过任何记录。
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>网页版 MAC 地址与序列号管理系统 &copy; 2025 版本 3.0</p>
+            <p>支持权限管理与审批流程，确保数据安全与合规</p>
+        </footer>
+    </div>
+    
+    <!-- 注册模态框 -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>用户注册</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>注册说明：</strong> 新用户注册后，需要超级管理员审核才能激活账号。
+                    </div>
+                </div>
+                
+                <form id="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="register-username" class="required"><i class="fas fa-user"></i> 用户名</label>
+                            <input type="text" id="register-username" required placeholder="请输入用户名（英文或数字）">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password" class="required"><i class="fas fa-lock"></i> 密码</label>
+                            <input type="password" id="register-password" required placeholder="请输入密码（至少6位）">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="register-fullname" class="required"><i class="fas fa-id-card"></i> 姓名</label>
+                            <input type="text" id="register-fullname" required placeholder="请输入真实姓名">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email"><i class="fas fa-envelope"></i> 邮箱</label>
+                            <input type="email" id="register-email" placeholder="请输入邮箱地址">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="register-role"><i class="fas fa-user-tag"></i> 申请角色</label>
+                            <select id="register-role">
+                                <option value="user">普通用户</option>
+                                <option value="admin">普通管理员</option>
+                            </select>
+                            <div class="permission-note">
+                                <i class="fas fa-info-circle"></i> 超级管理员角色只能由现有超级管理员分配
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> 注册
+                        </button>
+                        <button type="button" class="btn btn-outline" id="cancel-register">
+                            取消
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加用户模态框 -->
+    <div id="add-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加用户</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="add-user-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="add-user-username" class="required"><i class="fas fa-user"></i> 用户名</label>
+                            <input type="text" id="add-user-username" required placeholder="请输入用户名">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-user-password" class="required"><i class="fas fa-lock"></i> 密码</label>
+                            <input type="password" id="add-user-password" required placeholder="请输入密码">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="add-user-fullname" class="required"><i class="fas fa-id-card"></i> 姓名</label>
+                            <input type="text" id="add-user-fullname" required placeholder="请输入姓名">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-user-email"><i class="fas fa-envelope"></i> 邮箱</label>
+                            <input type="email" id="add-user-email" placeholder="请输入邮箱">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="add-user-role" class="required"><i class="fas fa-user-tag"></i> 角色</label>
+                            <select id="add-user-role" required>
+                                <option value="user">普通用户</option>
+                                <option value="admin">普通管理员</option>
+                                <option value="superadmin">超级管理员</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> 保存
+                        </button>
+                        <button type="button" class="btn btn-outline" id="cancel-add-user">
+                            取消
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 审批详情模态框 -->
+    <div id="approval-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>审批详情</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="approval-detail-content">
+                    <!-- 审批详情将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="button-group" id="approval-action-buttons">
+                    <button class="btn btn-success" id="approve-record-btn">
+                        <i class="fas fa-check"></i> 批准
+                    </button>
+                    <button class="btn btn-danger" id="reject-record-btn">
+                        <i class="fas fa-times"></i> 拒绝
+                    </button>
+                    <button class="btn btn-outline" id="close-approval-detail">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 系统全局状态
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('mac-system-users')) || [];
+        let records = JSON.parse(localStorage.getItem('mac-serial-records')) || [];
+        let pendingRecords = JSON.parse(localStorage.getItem('mac-pending-records')) || [];
+        let businessLineConfig = JSON.parse(localStorage.getItem('business-line-config'));
+        
+        // 初始化默认超级管理员用户
+        if (users.length === 0) {
+            const defaultSuperAdmin = {
+                id: 1,
+                username: 'admin',
+                password: '123456', // 简单演示，实际应用中应加密存储
+                fullname: '系统管理员',
+                email: 'admin@example.com',
+                role: 'superadmin',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+            users.push(defaultSuperAdmin);
+            localStorage.setItem('mac-system-users', JSON.stringify(users));
+        }
+        
+        // 初始化业务线配置
+        const defaultBusinessLineConfig = {
+            "雷石": {
+                startMac: "00:1A:2B:3C:4D:00",
+                endMac: "00:1A:2B:3C:7F:FF",
+                lastMac: "00:1A:2B:3C:4D:00",
+                usedCount: 0,
+                totalCount: 131072
+            },
+            "雷客": {
+                startMac: "00:1A:2B:3C:80:00",
+                endMac: "00:1A:2B:3C:BF:FF",
+                lastMac: "00:1A:2B:3C:80:00",
+                usedCount: 0,
+                totalCount: 16384
+            },
+            "哇屋": {
+                startMac: "00:1A:2B:3C:C0:00",
+                endMac: "00:1A:2B:3C:FF:FF",
+                lastMac: "00:1A:2B:3C:C0:00",
+                usedCount: 0,
+                totalCount: 16384
+            },
+            "和音": {
+                startMac: "00:1A:2B:3D:00:00",
+                endMac: "00:1A:2B:3D:3F:FF",
+                lastMac: "00:1A:2B:3D:00:00",
+                usedCount: 0,
+                totalCount: 16384
+            }
+        };
+        
+        if (!businessLineConfig) {
+            businessLineConfig = JSON.parse(JSON.stringify(defaultBusinessLineConfig));
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+        }
+        
+        // 计算每个业务线的可用地址总数
+        function calculateMacRangeCount(startMac, endMac) {
+            const start = parseInt(startMac.replace(/:/g, ''), 16);
+            const end = parseInt(endMac.replace(/:/g, ''), 16);
+            return end - start + 1;
+        }
+        
+        // 初始化业务线配置的总地址数
+        for (let business in businessLineConfig) {
+            const config = businessLineConfig[business];
+            config.totalCount = calculateMacRangeCount(config.startMac, config.endMac);
+        }
+        
+        // 更新业务线的已使用地址数
+        function updateBusinessLineUsedCount() {
+            // 重置使用计数
+            for (let business in businessLineConfig) {
+                businessLineConfig[business].usedCount = 0;
+            }
+            
+            // 计算每个业务线的已使用地址数
+            records.forEach(record => {
+                if (record.businessLine && businessLineConfig[record.businessLine]) {
+                    businessLineConfig[record.businessLine].usedCount += record.macCount;
+                }
+            });
+            
+            // 保存更新后的配置
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否已登录
+            const savedUser = localStorage.getItem('current-user');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    showMainSystem();
+                } catch (e) {
+                    showLoginPage();
+                }
+            } else {
+                showLoginPage();
+            }
+            
+            // 登录表单提交
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+            
+            // 注册按钮
+            document.getElementById('register-btn').addEventListener('click', function() {
+                document.getElementById('register-modal').style.display = 'flex';
+            });
+            
+            // 注册表单提交
+            document.getElementById('register-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                registerUser();
+            });
+            
+            // 关闭注册模态框
+            document.querySelectorAll('.close, #cancel-register').forEach(el => {
+                el.addEventListener('click', function() {
+                    document.getElementById('register-modal').style.display = 'none';
+                });
+            });
+            
+            // 退出登录
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                logout();
+            });
+        });
+        
+        // 显示登录页面
+        function showLoginPage() {
+            document.getElementById('login-page').style.display = 'block';
+            document.getElementById('main-system').style.display = 'none';
+        }
+        
+        // 显示主系统
+        function showMainSystem() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-system').style.display = 'block';
+            
+            // 更新用户信息
+            updateUserInfo();
+            
+            // 更新业务线使用计数
+            updateBusinessLineUsedCount();
+            
+            // 初始化主系统
+            initMainSystem();
+        }
+        
+        // 更新用户信息显示
+        function updateUserInfo() {
+            if (!currentUser) return;
+            
+            document.getElementById('username-display').textContent = currentUser.fullname || currentUser.username;
+            document.getElementById('user-role-display').textContent = getRoleName(currentUser.role);
+            
+            // 更新用户角色徽章
+            const roleBadge = document.getElementById('user-role-badge');
+            roleBadge.textContent = getRoleName(currentUser.role);
+            roleBadge.className = 'role-badge role-' + currentUser.role;
+            
+            // 更新用户头像
+            const avatar = document.getElementById('user-avatar');
+            const initials = (currentUser.fullname || currentUser.username).substring(0, 1).toUpperCase();
+            avatar.textContent = initials;
+        }
+        
+        // 获取角色名称
+        function getRoleName(role) {
+            switch(role) {
+                case 'superadmin': return '超级管理员';
+                case 'admin': return '普通管理员';
+                case 'user': return '普通用户';
+                default: return '未知角色';
+            }
+        }
+        
+        // 获取角色徽章HTML
+        function getRoleBadge(role) {
+            const roleName = getRoleName(role);
+            return `<span class="role-badge role-${role}">${roleName}</span>`;
+        }
+        
+        // 登录函数
+        function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            // 验证用户
+            const user = users.find(u => u.username === username && u.password === password && u.status === 'active');
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('current-user', JSON.stringify(user));
+                showMainSystem();
+            } else {
+                alert('用户名或密码错误，或账号未激活！');
+            }
+        }
+        
+        // 注册用户
+        function registerUser() {
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value;
+            const fullname = document.getElementById('register-fullname').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const role = document.getElementById('register-role').value;
+            
+            // 验证输入
+            if (!username || !password || !fullname) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('密码长度至少6位！');
+                return;
+            }
+            
+            // 检查用户名是否已存在
+            if (users.some(u => u.username === username)) {
+                alert('用户名已存在！');
+                return;
+            }
+            
+            // 创建新用户
+            const newUser = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                username,
+                password,
+                fullname,
+                email,
+                role,
+                status: 'pending', // 新注册用户需要审核
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('mac-system-users', JSON.stringify(users));
+            
+            // 关闭模态框
+            document.getElementById('register-modal').style.display = 'none';
+            
+            // 清空表单
+            document.getElementById('register-form').reset();
+            
+            alert('注册成功！请等待超级管理员审核您的账号。');
+        }
+        
+        // 退出登录
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('current-user');
+            showLoginPage();
+        }
+        
+        // 初始化主系统
+        function initMainSystem() {
+            // 设置当前日期
+            const currentDate = new Date().toISOString().split('T')[0];
+            document.getElementById('current-date').textContent = currentDate;
+            document.getElementById('production-date').value = currentDate;
+            
+            // 加载数据
+            loadTableData();
+            updateStats();
+            loadConfigTable();
+            loadUserTable();
+            loadPendingRecords();
+            loadMyRecords();
+            
+            // 更新业务线信息
+            updateBusinessLineInfo();
+            
+            // 根据用户权限创建标签页
+            createTabsByRole();
+            
+            // 绑定事件
+            bindMainSystemEvents();
+        }
+        
+        // 根据用户角色创建标签页
+        function createTabsByRole() {
+            const mainTabs = document.getElementById('main-tabs');
+            mainTabs.innerHTML = '';
+            
+            // 默认标签页
+            const defaultTabs = [
+                { id: 'add-record', name: '新增记录', icon: 'fa-plus-circle', roles: ['superadmin', 'admin'] },
+                { id: 'view-records', name: '数据列表', icon: 'fa-table', roles: ['superadmin', 'admin', 'user'] },
+                { id: 'my-records', name: '我的记录', icon: 'fa-history', roles: ['superadmin', 'admin'] },
+                { id: 'batch-serial', name: '批量序列号生成', icon: 'fa-barcode', roles: ['superadmin', 'admin'] }
+            ];
+            
+            // 管理员专属标签页
+            const adminTabs = [
+                { id: 'approval-management', name: '审批管理', icon: 'fa-check-circle', roles: ['superadmin'] },
+                { id: 'config', name: '业务线配置', icon: 'fa-cog', roles: ['superadmin'] },
+                { id: 'user-management', name: '用户管理', icon: 'fa-users', roles: ['superadmin'] }
+            ];
+            
+            // 添加默认标签页
+            defaultTabs.forEach(tab => {
+                if (tab.roles.includes(currentUser.role)) {
+                    const tabElement = document.createElement('div');
+                    tabElement.className = 'tab';
+                    tabElement.setAttribute('data-tab', tab.id);
+                    tabElement.innerHTML = `<i class="fas ${tab.icon}"></i> ${tab.name}`;
+                    mainTabs.appendChild(tabElement);
+                    
+                    // 如果是第一个标签页，设置为激活状态
+                    if (mainTabs.children.length === 1) {
+                        tabElement.classList.add('active');
+                        document.getElementById(tab.id).classList.add('active');
+                    }
+                }
+            });
+            
+            // 添加管理员专属标签页
+            adminTabs.forEach(tab => {
+                if (tab.roles.includes(currentUser.role)) {
+                    const tabElement = document.createElement('div');
+                    tabElement.className = 'tab';
+                    tabElement.setAttribute('data-tab', tab.id);
+                    tabElement.innerHTML = `<i class="fas ${tab.icon}"></i> ${tab.name}`;
+                    mainTabs.appendChild(tabElement);
+                }
+            });
+            
+            // 绑定标签页点击事件
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // 根据用户角色更新界面元素
+            updateUIByRole();
+        }
+        
+        // 切换标签页
+        function switchTab(tabId) {
+            // 更新标签页状态
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            
+            // 更新内容区域
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        // 根据用户角色更新界面元素
+        function updateUIByRole() {
+            // 更新审批通知
+            const approvalNotice = document.getElementById('approval-notice');
+            if (currentUser.role === 'superadmin') {
+                approvalNotice.innerHTML = `
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>超级管理员权限：</strong> 您提交的记录将直接生效，无需审批。
+                    </div>
+                `;
+                approvalNotice.className = 'alert alert-success';
+            } else if (currentUser.role === 'admin') {
+                approvalNotice.innerHTML = `
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>审批流程：</strong> 您提交的记录需要超级管理员审批通过后才会生效。
+                    </div>
+                `;
+                approvalNotice.className = 'alert alert-info';
+            } else {
+                // 普通用户没有新增记录标签页，所以不会看到这个
+            }
+            
+            // 更新提交按钮文本
+            const submitButton = document.querySelector('#data-form button[type="submit"]');
+            if (currentUser.role === 'superadmin') {
+                submitButton.innerHTML = '<i class="fas fa-save"></i> 保存记录';
+            } else {
+                submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> 提交审批';
+            }
+        }
+        
+        // 绑定主系统事件
+        function bindMainSystemEvents() {
+            // 表单提交事件
+            document.getElementById('data-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (currentUser.role === 'superadmin') {
+                    saveRecordDirectly();
+                } else {
+                    submitForApproval();
+                }
+            });
+            
+            // 计算按钮事件
+            document.getElementById('calculate-btn').addEventListener('click', function() {
+                calculateAddresses();
+            });
+            
+            // 重置表单事件
+            document.getElementById('reset-form').addEventListener('click', function() {
+                resetForm();
+            });
+            
+            // 导出按钮事件
+            document.getElementById('export-btn').addEventListener('click', function() {
+                exportData();
+            });
+            
+            // 导入按钮事件
+            document.getElementById('import-btn').addEventListener('click', function() {
+                alert('导入功能需要后端支持，演示版本中此功能为模拟功能。');
+            });
+            
+            // 查看待审批记录按钮
+            document.getElementById('show-pending-btn').addEventListener('click', function() {
+                switchTab('my-records');
+            });
+            
+            // 筛选功能
+            document.getElementById('apply-filter').addEventListener('click', function() {
+                const filterValue = document.getElementById('filter-business-line').value;
+                loadTableData(filterValue);
+            });
+            
+            document.getElementById('clear-filter').addEventListener('click', function() {
+                document.getElementById('filter-business-line').value = '';
+                loadTableData('');
+            });
+            
+            // 业务线选择变化事件
+            document.getElementById('business-line').addEventListener('change', function() {
+                updateBusinessLineInfo();
+                calculateNextValues();
+            });
+            
+            // 输入变化时更新序列号预览
+            document.getElementById('board-name').addEventListener('input', updateSerialPreview);
+            document.getElementById('production-date').addEventListener('change', updateSerialPreview);
+            document.getElementById('start-number').addEventListener('input', updateSerialPreview);
+            document.getElementById('production-count').addEventListener('input', updateSerialPreview);
+            
+            // 业务线配置相关事件
+            document.getElementById('save-config').addEventListener('click', function() {
+                saveBusinessLineConfig();
+            });
+            
+            document.getElementById('reset-config').addEventListener('click', function() {
+                if (confirm('确定要恢复默认配置吗？这将重置所有业务线的MAC地址段。')) {
+                    resetBusinessLineConfig();
+                }
+            });
+            
+            // 用户管理相关事件
+            document.getElementById('add-user-btn').addEventListener('click', function() {
+                document.getElementById('add-user-modal').style.display = 'flex';
+            });
+            
+            // 添加用户表单提交
+            document.getElementById('add-user-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewUser();
+            });
+            
+            // 关闭添加用户模态框
+            document.querySelectorAll('#cancel-add-user, #add-user-modal .close').forEach(el => {
+                el.addEventListener('click', function() {
+                    document.getElementById('add-user-modal').style.display = 'none';
+                });
+            });
+            
+            // 批量序列号生成
+            document.getElementById('generate-batch-serial').addEventListener('click', function() {
+                generateBatchSerial();
+            });
+            
+            document.getElementById('copy-batch-serial').addEventListener('click', function() {
+                copyBatchSerial();
+            });
+            
+            document.getElementById('clear-batch-serial').addEventListener('click', function() {
+                document.getElementById('batch-serial-result').value = '';
+            });
+            
+            // 关闭所有模态框
+            document.querySelectorAll('.modal .close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+            
+            // 设置当前日期为批量生成默认日期
+            const currentDate = new Date().toISOString().split('T')[0];
+            document.getElementById('batch-production-date').value = currentDate;
+        }
+        
+        // 更新业务线信息显示
+        function updateBusinessLineInfo() {
+            const businessLine = document.getElementById('business-line').value;
+            const infoElement = document.getElementById('business-line-info');
+            
+            if (!businessLine) {
+                infoElement.textContent = '请先选择业务线';
+                infoElement.style.color = 'var(--gray-color)';
+                return;
+            }
+            
+            const config = businessLineConfig[businessLine];
+            if (!config) {
+                infoElement.textContent = '该业务线配置不存在';
+                infoElement.style.color = 'var(--danger-color)';
+                return;
+            }
+            
+            const availableCount = config.totalCount - config.usedCount;
+            infoElement.innerHTML = `
+                <strong>${businessLine}</strong> | 起始: ${config.startMac} | 结束: ${config.endMac} | 
+                已用: ${config.usedCount} | 可用: ${availableCount}
+            `;
+            
+            // 根据业务线设置颜色
+            let color = 'var(--gray-color)';
+            switch(businessLine) {
+                case '雷石': color = 'var(--lei-shi)'; break;
+                case '雷客': color = 'var(--lei-ke)'; break;
+                case '哇屋': color = 'var(--wa-wu)'; break;
+                case '和音': color = 'var(--he-yin)'; break;
+            }
+            infoElement.style.color = color;
+        }
+        
+        // 更新序列号预览
+        function updateSerialPreview() {
+            const boardName = document.getElementById('board-name').value;
+            const productionDate = document.getElementById('production-date').value;
+            const startNumber = parseInt(document.getElementById('start-number').value) || 1;
+            const productionCount = parseInt(document.getElementById('production-count').value) || 1;
+            
+            if (!boardName || !productionDate) {
+                document.getElementById('serial-preview').style.display = 'none';
+                return;
+            }
+            
+            // 生成序列号预览
+            const formattedDate = productionDate.replace(/-/g, '');
+            const startSerial = generateSerialNumber(boardName, formattedDate, startNumber);
+            const endSerial = generateSerialNumber(boardName, formattedDate, startNumber + productionCount - 1);
+            
+            // 显示预览
+            document.getElementById('serial-preview').style.display = 'block';
+            document.getElementById('serial-preview-content').innerHTML = `
+                起始: <strong>${startSerial}</strong><br>
+                结束: <strong>${endSerial}</strong><br>
+                格式: ${boardName} + ${formattedDate} + 序号(3位)<br>
+                示例: ${generateSerialNumber(boardName, formattedDate, 1)}, ${generateSerialNumber(boardName, formattedDate, 2)}, ...
+            `;
+            
+            // 更新序列号字段
+            document.getElementById('serial-start').value = startSerial;
+            document.getElementById('serial-end').value = endSerial;
+        }
+        
+        // 生成单个序列号
+        function generateSerialNumber(boardName, formattedDate, number) {
+            // 序号格式化为3位数字，不足补0
+            const formattedNumber = number.toString().padStart(3, '0');
+            return boardName + formattedDate + formattedNumber;
+        }
+        
+        // 计算下一个MAC地址
+        function calculateNextValues() {
+            const businessLine = document.getElementById('business-line').value;
+            
+            if (!businessLine) {
+                document.getElementById('mac-start').value = '';
+                return;
+            }
+            
+            const config = businessLineConfig[businessLine];
+            if (!config) {
+                document.getElementById('mac-start').value = '';
+                return;
+            }
+            
+            // 设置MAC地址起始值
+            document.getElementById('mac-start').value = config.lastMac;
+        }
+        
+        // 计算地址范围
+        function calculateAddresses() {
+            const businessLine = document.getElementById('business-line').value;
+            const macCount = parseInt(document.getElementById('mac-count').value) || 0;
+            const productionCount = parseInt(document.getElementById('production-count').value) || 0;
+            
+            if (!businessLine) {
+                alert('请先选择业务线');
+                return;
+            }
+            
+            if (macCount <= 0) {
+                alert('MAC数量必须大于0');
+                return;
+            }
+            
+            if (productionCount <= 0) {
+                alert('生产数量必须大于0');
+                return;
+            }
+            
+            const config = businessLineConfig[businessLine];
+            if (!config) {
+                alert('业务线配置错误');
+                return;
+            }
+            
+            // 检查地址是否足够
+            const availableCount = config.totalCount - config.usedCount;
+            if (macCount > availableCount) {
+                alert(`所选业务线可用地址不足！可用：${availableCount}，需要：${macCount}`);
+                return;
+            }
+            
+            // 计算MAC地址范围
+            const macStart = document.getElementById('mac-start').value;
+            const macEnd = incrementMacAddress(macStart, macCount - 1);
+            
+            // 检查是否超出业务线地址范围
+            const startDecimal = macToDecimal(macStart);
+            const endDecimal = macToDecimal(macEnd);
+            const configStartDecimal = macToDecimal(config.startMac);
+            const configEndDecimal = macToDecimal(config.endMac);
+            
+            if (startDecimal < configStartDecimal || endDecimal > configEndDecimal) {
+                alert(`MAC地址超出业务线范围！允许范围：${config.startMac} - ${config.endMac}`);
+                return;
+            }
+            
+            document.getElementById('mac-end').value = macEnd;
+            
+            // 更新序列号预览
+            updateSerialPreview();
+        }
+        
+        // MAC地址转十进制
+        function macToDecimal(mac) {
+            return parseInt(mac.replace(/:/g, ''), 16);
+        }
+        
+        // MAC地址递增函数（十六进制）
+        function incrementMacAddress(macAddress, increment = 1) {
+            // 移除分隔符
+            const macWithoutSeparator = macAddress.replace(/:/g, '');
+            
+            // 转换为十进制整数
+            let macDecimal = parseInt(macWithoutSeparator, 16);
+            
+            // 增加指定的数量
+            macDecimal += increment;
+            
+            // 转换回十六进制字符串
+            let macHex = macDecimal.toString(16).toUpperCase();
+            
+            // 补齐12位
+            while (macHex.length < 12) {
+                macHex = '0' + macHex;
+            }
+            
+            // 重新添加分隔符
+            const macParts = [];
+            for (let i = 0; i < 12; i += 2) {
+                macParts.push(macHex.substring(i, i + 2));
+            }
+            
+            return macParts.join(':');
+        }
+        
+        // 超级管理员直接保存记录
+        function saveRecordDirectly() {
+            const record = collectRecordData();
+            if (!record) return;
+            
+            // 验证地址是否在业务线范围内
+            const config = businessLineConfig[record.businessLine];
+            const startDecimal = macToDecimal(record.macStart);
+            const endDecimal = macToDecimal(record.macEnd);
+            const configStartDecimal = macToDecimal(config.startMac);
+            const configEndDecimal = macToDecimal(config.endMac);
+            
+            if (startDecimal < configStartDecimal || endDecimal > configEndDecimal) {
+                alert(`MAC地址超出业务线范围！允许范围：${config.startMac} - ${config.endMac}`);
+                return;
+            }
+            
+            // 设置记录ID和状态
+            record.id = records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1;
+            record.status = 'approved';
+            record.approvedBy = currentUser.username;
+            record.approvedAt = new Date().toISOString();
+            record.createdBy = currentUser.username;
+            record.createdAt = new Date().toISOString();
+            
+            // 添加到记录数组
+            records.push(record);
+            
+            // 更新业务线最后使用的MAC地址
+            config.lastMac = incrementMacAddress(record.macEnd, 1);
+            config.usedCount += record.macCount;
+            
+            // 保存数据
+            localStorage.setItem('mac-serial-records', JSON.stringify(records));
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+            
+            // 重新加载数据
+            loadTableData();
+            updateStats();
+            loadConfigTable();
+            
+            // 重置表单
+            resetForm();
+            
+            alert('记录保存成功！');
+        }
+        
+        // 普通管理员提交审批
+        function submitForApproval() {
+            const record = collectRecordData();
+            if (!record) return;
+            
+            // 验证地址是否在业务线范围内
+            const config = businessLineConfig[record.businessLine];
+            const startDecimal = macToDecimal(record.macStart);
+            const endDecimal = macToDecimal(record.macEnd);
+            const configStartDecimal = macToDecimal(config.startMac);
+            const configEndDecimal = macToDecimal(config.endMac);
+            
+            if (startDecimal < configStartDecimal || endDecimal > configEndDecimal) {
+                alert(`MAC地址超出业务线范围！允许范围：${config.startMac} - ${config.endMac}`);
+                return;
+            }
+            
+            // 设置记录ID和状态
+            record.id = pendingRecords.length > 0 ? Math.max(...pendingRecords.map(r => r.id)) + 1 : 1;
+            record.status = 'pending';
+            record.createdBy = currentUser.username;
+            record.createdAt = new Date().toISOString();
+            
+            // 添加到待审批记录数组
+            pendingRecords.push(record);
+            
+            // 保存数据
+            localStorage.setItem('mac-pending-records', JSON.stringify(pendingRecords));
+            
+            // 重新加载数据
+            loadMyRecords();
+            loadPendingRecords();
+            
+            // 重置表单
+            resetForm();
+            
+            alert('记录已提交审批！请等待超级管理员审批。');
+        }
+        
+        // 收集记录数据
+        function collectRecordData() {
+            const businessLine = document.getElementById('business-line').value;
+            const boardName = document.getElementById('board-name').value;
+            const productionDate = document.getElementById('production-date').value;
+            const macCount = parseInt(document.getElementById('mac-count').value);
+            const productionCount = parseInt(document.getElementById('production-count').value);
+            const startNumber = parseInt(document.getElementById('start-number').value);
+            const macStart = document.getElementById('mac-start').value;
+            const macEnd = document.getElementById('mac-end').value;
+            const serialStart = document.getElementById('serial-start').value;
+            const serialEnd = document.getElementById('serial-end').value;
+            const boardNumber = document.getElementById('board-number').value;
+            const notes = document.getElementById('notes').value;
+            
+            // 验证数据
+            if (!businessLine) {
+                alert('请选择业务线');
+                return null;
+            }
+            
+            if (!boardName.trim()) {
+                alert('请输入主板名称');
+                return null;
+            }
+            
+            if (!productionDate) {
+                alert('请选择生产日期');
+                return null;
+            }
+            
+            if (macCount <= 0) {
+                alert('MAC数量必须大于0');
+                return null;
+            }
+            
+            if (productionCount <= 0) {
+                alert('生产数量必须大于0');
+                return null;
+            }
+            
+            if (startNumber <= 0) {
+                alert('起始序号必须大于0');
+                return null;
+            }
+            
+            if (!macStart || !macEnd) {
+                alert('请先计算地址范围');
+                return null;
+            }
+            
+            if (!serialStart || !serialEnd) {
+                alert('请先生成序列号');
+                return null;
+            }
+            
+            // 验证序列号格式
+            const formattedDate = productionDate.replace(/-/g, '');
+            const expectedStartSerial = generateSerialNumber(boardName, formattedDate, startNumber);
+            const expectedEndSerial = generateSerialNumber(boardName, formattedDate, startNumber + productionCount - 1);
+            
+            if (serialStart !== expectedStartSerial || serialEnd !== expectedEndSerial) {
+                alert('序列号格式不正确，请重新生成');
+                return null;
+            }
+            
+            // 创建记录对象
+            return {
+                businessLine,
+                boardName,
+                productionDate,
+                macStart,
+                macEnd,
+                serialStart,
+                serialEnd,
+                macCount,
+                productionCount,
+                startNumber,
+                boardNumber,
+                notes,
+                formattedDate
+            };
+        }
+        
+        // 加载表格数据
+        function loadTableData(filterBusinessLine = '') {
+            const tableBody = document.getElementById('table-body');
+            const emptyMessage = document.getElementById('empty-table-message');
+            
+            // 筛选已批准的记录
+            let filteredRecords = records.filter(record => record.status === 'approved');
+            
+            // 按业务线筛选
+            if (filterBusinessLine) {
+                filteredRecords = filteredRecords.filter(record => record.businessLine === filterBusinessLine);
+            }
+            
+            if (filteredRecords.length === 0) {
+                tableBody.innerHTML = '';
+                emptyMessage.style.display = 'flex';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            let tableHTML = '';
+            filteredRecords.forEach(record => {
+                // 业务线标签
+                let businessLineClass = '';
+                switch(record.businessLine) {
+                    case '雷石': businessLineClass = 'lei-shi-badge'; break;
+                    case '雷客': businessLineClass = 'lei-ke-badge'; break;
+                    case '哇屋': businessLineClass = 'wa-wu-badge'; break;
+                    case '和音': businessLineClass = 'he-yin-badge'; break;
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td>${record.id}</td>
+                        <td><span class="business-line-badge ${businessLineClass}">${record.businessLine}</span></td>
+                        <td>${record.boardName}</td>
+                        <td class="mac-address">${record.macStart}</td>
+                        <td class="mac-address">${record.macEnd}</td>
+                        <td class="serial-number">${record.serialStart}</td>
+                        <td class="serial-number">${record.serialEnd}</td>
+                        <td>${record.macCount}</td>
+                        <td>${record.productionCount}</td>
+                        <td>${record.productionDate}</td>
+                        <td><span class="status-badge status-approved">已批准</span></td>
+                        <td>
+                            <div class="actions">
+                                ${currentUser.role === 'superadmin' ? `
+                                <div class="action-btn delete-btn" onclick="deleteRecord(${record.id})">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+            document.getElementById('total-records').textContent = `${filteredRecords.length} 条记录`;
+        }
+        
+        // 更新统计信息
+        function updateStats() {
+            // 主板型号总数（去重）
+            const boardNames = [...new Set(records.filter(r => r.status === 'approved').map(r => r.boardName))];
+            document.getElementById('total-boards').textContent = boardNames.length;
+            
+            // MAC地址总数
+            const totalMac = records.filter(r => r.status === 'approved').reduce((sum, record) => sum + record.macCount, 0);
+            document.getElementById('total-mac').textContent = totalMac.toLocaleString();
+            
+            // 序列号总数（等于生产总数）
+            const totalSerial = records.filter(r => r.status === 'approved').reduce((sum, record) => sum + record.productionCount, 0);
+            document.getElementById('total-serial').textContent = totalSerial.toLocaleString();
+            
+            // 生产总数
+            document.getElementById('total-production').textContent = totalSerial.toLocaleString();
+        }
+        
+        // 删除记录（仅超级管理员）
+        function deleteRecord(id) {
+            if (!confirm('确定要删除这条记录吗？此操作不可恢复！')) {
+                return;
+            }
+            
+            // 找到要删除的记录
+            const recordIndex = records.findIndex(r => r.id === id);
+            if (recordIndex === -1) return;
+            
+            const record = records[recordIndex];
+            
+            // 更新业务线使用计数
+            const config = businessLineConfig[record.businessLine];
+            if (config) {
+                config.usedCount -= record.macCount;
+                if (config.usedCount < 0) config.usedCount = 0;
+                
+                // 重新计算最后使用的MAC地址（需要遍历该业务线剩余记录）
+                let lastMac = config.startMac;
+                records.forEach(r => {
+                    if (r.businessLine === record.businessLine && r.id !== record.id && r.status === 'approved') {
+                        const rEndDecimal = macToDecimal(r.macEnd);
+                        const lastMacDecimal = macToDecimal(lastMac);
+                        if (rEndDecimal > lastMacDecimal) {
+                            lastMac = incrementMacAddress(r.macEnd, 1);
+                        }
+                    }
+                });
+                config.lastMac = lastMac;
+                
+                localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+            }
+            
+            // 删除记录
+            records.splice(recordIndex, 1);
+            
+            // 保存数据
+            localStorage.setItem('mac-serial-records', JSON.stringify(records));
+            
+            // 重新加载表格和统计
+            loadTableData();
+            updateStats();
+            loadConfigTable();
+            
+            alert('记录删除成功！');
+        }
+        
+        // 重置表单
+        function resetForm() {
+            document.getElementById('data-form').reset();
+            const currentDate = new Date().toISOString().split('T')[0];
+            document.getElementById('production-date').value = currentDate;
+            document.getElementById('mac-count').value = 10;
+            document.getElementById('production-count').value = 10;
+            document.getElementById('start-number').value = 1;
+            document.getElementById('business-line').value = '';
+            document.getElementById('serial-preview').style.display = 'none';
+            document.getElementById('serial-start').value = '';
+            document.getElementById('serial-end').value = '';
+            document.getElementById('mac-start').value = '';
+            document.getElementById('mac-end').value = '';
+            updateBusinessLineInfo('');
+        }
+        
+        // 加载业务线配置表格
+        function loadConfigTable() {
+            const tableBody = document.getElementById('config-table-body');
+            
+            let tableHTML = '';
+            for (let business in businessLineConfig) {
+                const config = businessLineConfig[business];
+                const availableCount = config.totalCount - config.usedCount;
+                
+                // 业务线标签
+                let businessLineClass = '';
+                switch(business) {
+                    case '雷石': businessLineClass = 'lei-shi-badge'; break;
+                    case '雷客': businessLineClass = 'lei-ke-badge'; break;
+                    case '哇屋': businessLineClass = 'wa-wu-badge'; break;
+                    case '和音': businessLineClass = 'he-yin-badge'; break;
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td><span class="business-line-badge ${businessLineClass}">${business}</span></td>
+                        <td class="mac-address">${config.startMac}</td>
+                        <td class="mac-address">${config.endMac}</td>
+                        <td>${config.usedCount}</td>
+                        <td>${availableCount}</td>
+                        <td class="mac-address">${config.lastMac}</td>
+                        <td>
+                            <div class="actions">
+                                <div class="action-btn edit-btn" onclick="editBusinessLineConfig('${business}')">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
+        // 编辑业务线配置
+        function editBusinessLineConfig(businessLine) {
+            const config = businessLineConfig[businessLine];
+            if (!config) return;
+            
+            // 在实际应用中，这里应该打开一个编辑模态框
+            // 由于时间关系，我们简化处理
+            const newStartMac = prompt(`请输入${businessLine}的起始MAC地址：`, config.startMac);
+            if (!newStartMac) return;
+            
+            const newEndMac = prompt(`请输入${businessLine}的结束MAC地址：`, config.endMac);
+            if (!newEndMac) return;
+            
+            // 验证MAC地址格式
+            const macRegex = /^([0-9A-F]{2}:){5}[0-9A-F]{2}$/i;
+            if (!macRegex.test(newStartMac) || !macRegex.test(newEndMac)) {
+                alert('MAC地址格式不正确，应为XX:XX:XX:XX:XX:XX格式');
+                return;
+            }
+            
+            // 验证起始地址小于结束地址
+            const startDecimal = macToDecimal(newStartMac);
+            const endDecimal = macToDecimal(newEndMac);
+            if (startDecimal >= endDecimal) {
+                alert('起始MAC地址必须小于结束MAC地址');
+                return;
+            }
+            
+            // 更新配置
+            config.startMac = newStartMac;
+            config.endMac = newEndMac;
+            config.totalCount = calculateMacRangeCount(newStartMac, newEndMac);
+            
+            // 检查最后使用地址是否在新范围内
+            const lastMacDecimal = macToDecimal(config.lastMac);
+            if (lastMacDecimal < startDecimal || lastMacDecimal > endDecimal) {
+                config.lastMac = newStartMac;
+                config.usedCount = 0;
+            }
+            
+            // 保存配置
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+            
+            // 重新加载配置表格
+            loadConfigTable();
+            
+            alert('配置保存成功！');
+        }
+        
+        // 保存业务线配置
+        function saveBusinessLineConfig() {
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+            alert('配置保存成功！');
+        }
+        
+        // 恢复默认业务线配置
+        function resetBusinessLineConfig() {
+            businessLineConfig = JSON.parse(JSON.stringify(defaultBusinessLineConfig));
+            
+            // 重新计算地址总数
+            for (let business in businessLineConfig) {
+                const config = businessLineConfig[business];
+                config.totalCount = calculateMacRangeCount(config.startMac, config.endMac);
+            }
+            
+            // 更新已使用计数
+            updateBusinessLineUsedCount();
+            
+            // 保存配置
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+            
+            // 重新加载配置表格
+            loadConfigTable();
+            
+            alert('配置已恢复为默认值！');
+        }
+        
+        // 加载用户表格
+        function loadUserTable() {
+            const tableBody = document.getElementById('user-table-body');
+            const emptyMessage = document.getElementById('empty-user-message');
+            
+            // 过滤掉当前用户
+            const filteredUsers = users.filter(user => user.id !== currentUser.id);
+            
+            if (filteredUsers.length === 0) {
+                tableBody.innerHTML = '';
+                emptyMessage.style.display = 'flex';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            let tableHTML = '';
+            filteredUsers.forEach(user => {
+                // 状态徽章
+                let statusBadge = '';
+                if (user.status === 'active') {
+                    statusBadge = '<span class="status-badge status-approved">激活</span>';
+                } else if (user.status === 'pending') {
+                    statusBadge = '<span class="status-badge status-pending">待审核</span>';
+                } else {
+                    statusBadge = '<span class="status-badge status-rejected">禁用</span>';
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.fullname}</td>
+                        <td>${getRoleBadge(user.role)}</td>
+                        <td>${user.email || '-'}</td>
+                        <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="actions">
+                                ${user.status === 'pending' ? `
+                                <div class="action-btn approve-btn" onclick="approveUser(${user.id})">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                ` : ''}
+                                <div class="action-btn edit-btn" onclick="editUser(${user.id})">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div class="action-btn delete-btn" onclick="deleteUser(${user.id})">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
+        // 添加新用户
+        function addNewUser() {
+            const username = document.getElementById('add-user-username').value.trim();
+            const password = document.getElementById('add-user-password').value;
+            const fullname = document.getElementById('add-user-fullname').value.trim();
+            const email = document.getElementById('add-user-email').value.trim();
+            const role = document.getElementById('add-user-role').value;
+            
+            // 验证输入
+            if (!username || !password || !fullname || !role) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 检查用户名是否已存在
+            if (users.some(u => u.username === username)) {
+                alert('用户名已存在！');
+                return;
+            }
+            
+            // 创建新用户
+            const newUser = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                username,
+                password,
+                fullname,
+                email,
+                role,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('mac-system-users', JSON.stringify(users));
+            
+            // 关闭模态框
+            document.getElementById('add-user-modal').style.display = 'none';
+            
+            // 清空表单
+            document.getElementById('add-user-form').reset();
+            
+            // 重新加载用户表格
+            loadUserTable();
+            
+            alert('用户添加成功！');
+        }
+        
+        // 审核用户
+        function approveUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            user.status = 'active';
+            localStorage.setItem('mac-system-users', JSON.stringify(users));
+            loadUserTable();
+            alert('用户已激活！');
+        }
+        
+        // 编辑用户
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            // 在实际应用中，这里应该打开一个编辑模态框
+            // 由于时间关系，我们简化处理
+            const newRole = prompt(`请选择${user.username}的角色：\n1. 超级管理员\n2. 普通管理员\n3. 普通用户`, user.role);
+            if (!newRole) return;
+            
+            if (['superadmin', 'admin', 'user'].includes(newRole)) {
+                user.role = newRole;
+                localStorage.setItem('mac-system-users', JSON.stringify(users));
+                loadUserTable();
+                alert('用户角色已更新！');
+            } else {
+                alert('无效的角色！');
+            }
+        }
+        
+        // 删除用户
+        function deleteUser(userId) {
+            if (!confirm('确定要删除这个用户吗？此操作不可恢复！')) {
+                return;
+            }
+            
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex === -1) return;
+            
+            // 不能删除自己
+            if (users[userIndex].username === currentUser.username) {
+                alert('不能删除当前登录的用户！');
+                return;
+            }
+            
+            users.splice(userIndex, 1);
+            localStorage.setItem('mac-system-users', JSON.stringify(users));
+            loadUserTable();
+            alert('用户已删除！');
+        }
+        
+        // 加载待审批记录
+        function loadPendingRecords() {
+            const tableBody = document.getElementById('approval-table-body');
+            const emptyMessage = document.getElementById('empty-approval-message');
+            
+            if (pendingRecords.length === 0) {
+                tableBody.innerHTML = '';
+                emptyMessage.style.display = 'flex';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            let tableHTML = '';
+            pendingRecords.forEach(record => {
+                // 业务线标签
+                let businessLineClass = '';
+                switch(record.businessLine) {
+                    case '雷石': businessLineClass = 'lei-shi-badge'; break;
+                    case '雷客': businessLineClass = 'lei-ke-badge'; break;
+                    case '哇屋': businessLineClass = 'wa-wu-badge'; break;
+                    case '和音': businessLineClass = 'he-yin-badge'; break;
+                }
+                
+                // 状态徽章
+                let statusBadge = '';
+                if (record.status === 'pending') {
+                    statusBadge = '<span class="status-badge status-pending">待审批</span>';
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td>${record.id}</td>
+                        <td>${record.createdBy}</td>
+                        <td><span class="business-line-badge ${businessLineClass}">${record.businessLine}</span></td>
+                        <td>${record.boardName}</td>
+                        <td class="mac-address">${record.macStart}<br>${record.macEnd}</td>
+                        <td class="serial-number">${record.serialStart}<br>${record.serialEnd}</td>
+                        <td>${record.macCount}</td>
+                        <td>${new Date(record.createdAt).toLocaleString()}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="approval-actions">
+                                <div class="action-btn approve-btn" onclick="showApprovalDetail(${record.id})">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
+        // 显示审批详情
+        function showApprovalDetail(recordId) {
+            const record = pendingRecords.find(r => r.id === recordId);
+            if (!record) return;
+            
+            // 构建详情内容
+            const detailContent = document.getElementById('approval-detail-content');
+            detailContent.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>记录详情：</strong> 请仔细审核以下记录信息。
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>提交人</label>
+                        <div>${record.createdBy}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>提交时间</label>
+                        <div>${new Date(record.createdAt).toLocaleString()}</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>业务线</label>
+                        <div>${record.businessLine}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>主板名称</label>
+                        <div>${record.boardName}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>生产日期</label>
+                        <div>${record.productionDate}</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>MAC地址范围</label>
+                        <div class="mac-address">${record.macStart} - ${record.macEnd}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>MAC数量</label>
+                        <div>${record.macCount}</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>序列号范围</label>
+                        <div class="serial-number">${record.serialStart} - ${record.serialEnd}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>生产数量</label>
+                        <div>${record.productionCount}</div>
+                    </div>
+                </div>
+                
+                ${record.notes ? `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>备注</label>
+                        <div>${record.notes}</div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <input type="hidden" id="current-approval-record-id" value="${record.id}">
+            `;
+            
+            // 显示模态框
+            document.getElementById('approval-detail-modal').style.display = 'flex';
+            
+            // 绑定审批按钮事件
+            document.getElementById('approve-record-btn').onclick = function() {
+                approveRecord(recordId);
+            };
+            
+            document.getElementById('reject-record-btn').onclick = function() {
+                rejectRecord(recordId);
+            };
+            
+            document.getElementById('close-approval-detail').onclick = function() {
+                document.getElementById('approval-detail-modal').style.display = 'none';
+            };
+        }
+        
+        // 批准记录
+        function approveRecord(recordId) {
+            const recordIndex = pendingRecords.findIndex(r => r.id === recordId);
+            if (recordIndex === -1) return;
+            
+            const record = pendingRecords[recordIndex];
+            
+            // 验证地址是否在业务线范围内
+            const config = businessLineConfig[record.businessLine];
+            const startDecimal = macToDecimal(record.macStart);
+            const endDecimal = macToDecimal(record.macEnd);
+            const configStartDecimal = macToDecimal(config.startMac);
+            const configEndDecimal = macToDecimal(config.endMac);
+            
+            if (startDecimal < configStartDecimal || endDecimal > configEndDecimal) {
+                alert(`MAC地址超出业务线范围！允许范围：${config.startMac} - ${config.endMac}`);
+                return;
+            }
+            
+            // 检查地址是否足够
+            const availableCount = config.totalCount - config.usedCount;
+            if (record.macCount > availableCount) {
+                alert(`业务线可用地址不足！可用：${availableCount}，需要：${record.macCount}`);
+                return;
+            }
+            
+            // 更新记录状态
+            record.status = 'approved';
+            record.approvedBy = currentUser.username;
+            record.approvedAt = new Date().toISOString();
+            record.id = records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1;
+            
+            // 添加到正式记录
+            records.push(record);
+            
+            // 从待审批记录中移除
+            pendingRecords.splice(recordIndex, 1);
+            
+            // 更新业务线配置
+            config.lastMac = incrementMacAddress(record.macEnd, 1);
+            config.usedCount += record.macCount;
+            
+            // 保存数据
+            localStorage.setItem('mac-serial-records', JSON.stringify(records));
+            localStorage.setItem('mac-pending-records', JSON.stringify(pendingRecords));
+            localStorage.setItem('business-line-config', JSON.stringify(businessLineConfig));
+            
+            // 重新加载数据
+            loadTableData();
+            updateStats();
+            loadConfigTable();
+            loadPendingRecords();
+            loadMyRecords();
+            
+            // 关闭模态框
+            document.getElementById('approval-detail-modal').style.display = 'none';
+            
+            alert('记录已批准！');
+        }
+        
+        // 拒绝记录
+        function rejectRecord(recordId) {
+            const recordIndex = pendingRecords.findIndex(r => r.id === recordId);
+            if (recordIndex === -1) return;
+            
+            const record = pendingRecords[recordIndex];
+            
+            // 更新记录状态
+            record.status = 'rejected';
+            record.approvedBy = currentUser.username;
+            record.approvedAt = new Date().toISOString();
+            
+            // 从待审批记录中移除
+            pendingRecords.splice(recordIndex, 1);
+            
+            // 保存数据
+            localStorage.setItem('mac-pending-records', JSON.stringify(pendingRecords));
+            
+            // 重新加载数据
+            loadPendingRecords();
+            loadMyRecords();
+            
+            // 关闭模态框
+            document.getElementById('approval-detail-modal').style.display = 'none';
+            
+            alert('记录已拒绝！');
+        }
+        
+        // 加载我的记录
+        function loadMyRecords() {
+            const tableBody = document.getElementById('my-records-table-body');
+            const emptyMessage = document.getElementById('empty-my-records-message');
+            
+            // 获取当前用户的所有记录（包括待审批、已批准、已拒绝）
+            const userRecords = [];
+            
+            // 添加待审批记录
+            pendingRecords
+                .filter(record => record.createdBy === currentUser.username)
+                .forEach(record => {
+                    userRecords.push({
+                        ...record,
+                        source: 'pending',
+                        displayId: `P${record.id}`
+                    });
+                });
+            
+            // 添加已批准记录
+            records
+                .filter(record => record.createdBy === currentUser.username)
+                .forEach(record => {
+                    userRecords.push({
+                        ...record,
+                        source: 'approved',
+                        displayId: record.id
+                    });
+                });
+            
+            // 按时间倒序排序
+            userRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if (userRecords.length === 0) {
+                tableBody.innerHTML = '';
+                emptyMessage.style.display = 'flex';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            let tableHTML = '';
+            userRecords.forEach(record => {
+                // 业务线标签
+                let businessLineClass = '';
+                switch(record.businessLine) {
+                    case '雷石': businessLineClass = 'lei-shi-badge'; break;
+                    case '雷客': businessLineClass = 'lei-ke-badge'; break;
+                    case '哇屋': businessLineClass = 'wa-wu-badge'; break;
+                    case '和音': businessLineClass = 'he-yin-badge'; break;
+                }
+                
+                // 状态徽章
+                let statusBadge = '';
+                if (record.status === 'pending') {
+                    statusBadge = '<span class="status-badge status-pending">待审批</span>';
+                } else if (record.status === 'approved') {
+                    statusBadge = '<span class="status-badge status-approved">已批准</span>';
+                } else if (record.status === 'rejected') {
+                    statusBadge = '<span class="status-badge status-rejected">已拒绝</span>';
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td>${record.displayId}</td>
+                        <td><span class="business-line-badge ${businessLineClass}">${record.businessLine}</span></td>
+                        <td>${record.boardName}</td>
+                        <td class="mac-address">${record.macStart}<br>${record.macEnd}</td>
+                        <td class="serial-number">${record.serialStart}<br>${record.serialEnd}</td>
+                        <td>${record.macCount}</td>
+                        <td>${new Date(record.createdAt).toLocaleString()}</td>
+                        <td>${statusBadge}</td>
+                        <td>${record.approvedAt ? new Date(record.approvedAt).toLocaleString() : '-'}</td>
+                        <td>${record.approvedBy || '-'}</td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
+        // 批量生成序列号
+        function generateBatchSerial() {
+            const boardName = document.getElementById('batch-board-name').value;
+            const productionDate = document.getElementById('batch-production-date').value;
+            const startNumber = parseInt(document.getElementById('batch-start-number').value) || 1;
+            const count = parseInt(document.getElementById('batch-count').value) || 10;
+            const prefix = document.getElementById('batch-prefix').value;
+            const suffix = document.getElementById('batch-suffix').value;
+            
+            if (!boardName || !productionDate) {
+                alert('请输入主板名称和生产日期');
+                return;
+            }
+            
+            if (count <= 0) {
+                alert('生成数量必须大于0');
+                return;
+            }
+            
+            if (count > 1000) {
+                alert('单次生成数量不能超过1000个');
+                return;
+            }
+            
+            const formattedDate = productionDate.replace(/-/g, '');
+            let result = '';
+            
+            for (let i = 0; i < count; i++) {
+                const serialNumber = prefix + generateSerialNumber(boardName, formattedDate, startNumber + i) + suffix;
+                result += serialNumber + '\n';
+            }
+            
+            document.getElementById('batch-serial-result').value = result;
+            alert(`已生成${count}个序列号！`);
+        }
+        
+        // 复制批量生成的序列号
+        function copyBatchSerial() {
+            const resultTextarea = document.getElementById('batch-serial-result');
+            
+            if (!resultTextarea.value.trim()) {
+                alert('没有内容可复制');
+                return;
+            }
+            
+            resultTextarea.select();
+            document.execCommand('copy');
+            
+            // 取消选中
+            window.getSelection().removeAllRanges();
+            
+            alert('序列号已复制到剪贴板！');
+        }
+        
+        // 导出数据
+        function exportData() {
+            if (records.length === 0) {
+                alert('没有数据可导出');
+                return;
+            }
+            
+            // 创建CSV内容
+            let csvContent = "序号,业务线,主板名称,生产日期,MAC地址起始,MAC地址结束,序列号起始地址,序列号结束地址,MAC数量,生产数量,起始序号,提交人,审批人,审批时间,状态\n";
+            
+            records.forEach(record => {
+                csvContent += `${record.id},${record.businessLine},${record.boardName},${record.productionDate},${record.macStart},${record.macEnd},${record.serialStart},${record.serialEnd},${record.macCount},${record.productionCount},${record.startNumber || 1},${record.createdBy || ''},${record.approvedBy || ''},${record.approvedAt || ''},${record.status || ''}\n`;
+            });
+            
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `mac_serial_data_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('数据已导出为CSV文件');
+        }
+    </script>
+</body>
+</html>
